@@ -15,6 +15,8 @@
   const db = firebase.firestore()
 
   console.log(db);
+
+ 
  
   
     // document.getElementById("icon").addEventListener('click', function(){
@@ -49,18 +51,42 @@ db.collection("conversation").doc("gsOU1OgUb8bsDqf2QTDa")
    document.getElementById('chatArea').innerHTML += `${doc.data().message[last-1].user}: ${doc.data().message[last-1].content} <br>`;
    }
 });
-
-
+const refresh = () => { window.addEventListener('keypress',pushMessage,false);
+function pushMessage(key){
+  if (key.keyCode == "13"){
+    let content = document.getElementById('input').value = null;
+  }
+}
 document.getElementById('icon').addEventListener('click',function(){
-  let washingtonRef = db.collection("conversation").doc("gsOU1OgUb8bsDqf2QTDa");
-let content = document.getElementById('input').value;
-  // Atomically add a new region to the "regions" array field.
-  washingtonRef.update({
-      message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
+  let content = document.getElementById('input').value = null;
 });
-});
+}
+const pushData =() => {
 
+  window.addEventListener('keypress',pushMessage,false);
+  function pushMessage(key){
+    if (key.keyCode == "13"){
+      let washingtonRef = db.collection("conversation").doc("gsOU1OgUb8bsDqf2QTDa");
+      let content = document.getElementById('input').value;
+        // Atomically add a new region to the "regions" array field.
+        washingtonRef.update({
+            message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
+      });
+    }
+  }
+  document.getElementById('icon').addEventListener('click',function(){
+    let washingtonRef = db.collection("conversation").doc("gsOU1OgUb8bsDqf2QTDa");
+  let content = document.getElementById('input').value;
+    // Atomically add a new region to the "regions" array field.
+    washingtonRef.update({
+        message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
+  });
+  
+  });
+}
 
+pushData();
+refresh();
 
 // const realTime = () => { 
 
