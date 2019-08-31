@@ -193,72 +193,123 @@ data.getDataFormUser = (room) => {
 //      console.log('hehe');
 //   });
 
+let chatArea = document.getElementById("chatArea");
+function scrollToBottom() {
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+// shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight
+
+
 let user = data.users;
+document.getElementById('intro').innerText += `ROOM: ${room}`
 // });
 let startLength = 0;
 db.collection("conversation").doc(`${room}`).get().then(function(doc) { 
- doc.data().message.forEach((item,index) => {
-  startLength++;
-  document.getElementById('chatArea').innerHTML += `${doc.data().message[index].user}: ${doc.data().message[index].content} <br>`
- });
+   doc.data().message.forEach((item,index) => {
+    startLength++;
+    // console.log(user);
+    
+    if (item.user == user){ 
+      document.getElementById('chatArea').innerHTML += `
+    <div class="to">
+      <div class="user text-right">${doc.data().message[index].user}</div>
+      <div class="content-avatar row-rev">
+        <div class="avatar-user"><div class="character">${item.user[0]}</div></div>
+        <div class="content-user">
+        ${doc.data().message[index].content}
+         </div>
+      </div>
+    </div>`
+    }
+    else {    
+      document.getElementById('chatArea').innerHTML += `
+      <div class="to">
+        <div class="user">${doc.data().message[index].user}</div>
+        <div class="content-avatar">
+        <div class="avatar-friend"><div class="character">${item.user[0]}</div></div>
+          <div class="content-friend">
+          ${doc.data().message[index].content}
+           </div>
+        </div>
+      </div>`
+    }
+   });
 });
-db.collection("conversation").doc(`${room}`)
-.onSnapshot(function(doc) {
-let last = 0; 
- doc.data().message.forEach((item,index) => {
-  last++;
- })
- if(last>startLength){
- document.getElementById('chatArea').innerHTML += `${doc.data().message[last-1].user}: ${doc.data().message[last-1].content} <br>`;
- }
-});
-const refresh = () => { window.addEventListener('keypress',pushMessage,false);
-function pushMessage(key){
-if (key.keyCode == "13"){
-  let content = document.getElementById('input').value = null;
-}
-}
-document.getElementById('icon').addEventListener('click',function(){
-let content = document.getElementById('input').value = null;
-});
-}
-const pushData = () => {
 
-window.addEventListener('keypress',pushMessage,false);
-function pushMessage(key){
-  if (key.keyCode == "13"){
+db.collection("conversation").doc(`${room}`).onSnapshot(function(doc) {
+  let last = 0; 
+   doc.data().message.forEach((item,index) => {
+    last++;
+   })
+   if(last>startLength){
+   if (doc.data().message[last-1].user == user){
+    document.getElementById('chatArea').innerHTML += `
+  <div class="to">
+    <div class="user text-right">${doc.data().message[last-1].user}</div>
+    <div class="content-avatar row-rev">
+      <div class="avatar-user"><div class="character">${doc.data().message[last-1].user[0]}</div></div>
+      <div class="content-user">
+      ${doc.data().message[last-1].content}
+       </div>
+    </div>
+  </div>`
+  }
+  else {
+    document.getElementById('chatArea').innerHTML += `
+    <div class="to">
+      <div class="user">${doc.data().message[last-1].user}</div>
+      <div class="content-avatar">
+        <div class="avatar-friend"><div class="character">${doc.data().message[last-1].user[0]}</div></div>
+        <div class="content-friend">
+        ${doc.data().message[last-1].content}
+         </div>
+      </div>
+    </div>`
+  }
+  }
+
+});
+const pushData = () => {
+  window.addEventListener('keypress',pushMessage,false);
+  function pushMessage(key){
+    if (key.keyCode == "13"){
+      let washingtonRef = db.collection("conversation").doc(`${room}`);
+      let content = document.getElementById('input').value;
+        // Atomically add a new region to the "regions" array field.
+        washingtonRef.update({
+            message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
+      });
+    }
+  }
+  console.dir(document.getElementById('text-submit'))
+  document.getElementById('text-submit').addEventListener('submit',function(e){
+    e.preventDefault()
     let washingtonRef = db.collection("conversation").doc(`${room}`);
     let content = document.getElementById('input').value;
-      // Atomically add a new region to the "regions" array field.
-      washingtonRef.update({
-          message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
-    });
-  }
+    document.getElementById('input').value = '';
+    // Atomically add a new region to the "regions" array field.
+    washingtonRef.update({
+        message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
+  });
+  setTimeout(function(){scrollToBottom()}, 500)
+  });
 }
-document.getElementById('icon').addEventListener('click',function(){
-  let washingtonRef = db.collection("conversation").doc(`${room}`);
-let content = document.getElementById('input').value;
-  // Atomically add a new region to the "regions" array field.
-  washingtonRef.update({
-      message: firebase.firestore.FieldValue.arrayUnion({user:`${user}`,content:`${content}`})
-});
-});
-}
+
 pushData();
-refresh();
 
 // const realTime = () => { 
 
-// db.collection("conversation").doc('gsOU1OgUb8bsDqf2QTDa').onSnapshot(function(querySnapshot) {
-//   let chat = [];
-//   querySnapshot.forEach((doc) => {
-//     let name = Object.keys(doc.data());
-//     console.log(doc.data());
-//    chat.push(doc.data());  
-//   });
-//   //roi ram vl
-//   document.getElementById('chatArea').innerHTML += chat;
- 
+  // db.collection("conversation").doc('gsOU1OgUb8bsDqf2QTDa').onSnapshot(function(querySnapshot) {
+  //   let chat = [];
+  //   querySnapshot.forEach((doc) => {
+  //     let name = Object.keys(doc.data());
+  //     console.log(doc.data());
+  //    chat.push(doc.data());  
+  //   });
+  //   //roi ram vl
+  //   document.getElementById('chatArea').innerHTML += chat;
+   
 //     // document.getElementById('chatArea').innerHTML = `${Object.keys(doc.data())}: ${doc.data()[name]} <br>`;
 // console.log(chat);
 // }); 
@@ -272,6 +323,5 @@ refresh();
 //  console.dir(document.getElementById('chatArea'));
 // }
 // realTime();
-// add();   
-
+// add();
 }

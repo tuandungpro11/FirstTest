@@ -109,21 +109,23 @@ view.signUpRoom = `
 view.chat = `
 <link rel="stylesheet" href="Chatbox.css"> 
 <div class="boxchat">
-  <div class="cover-chat">
-      <div id="chatArea" class="chat-area">
-    <b>
+            <div id="intro" class="intro"></div>
+        <div class="cover-chat">
+           
+            <div id="chatArea" class="chat-area">
+          <b>
 
-    </div>
-    </div>
-    <div class="cover-text">
-        <div class="text-area">
-            <input id="input" class="input" type="text" placeholder="Type text here...">
-            <!-- <i id="icon" class="fas fa-arrow-alt-circle-right fa-3x icon"></i>     -->
-            <button id="icon">Push</button>
-        </div>
-    </div>
+          </div>
+          </div>
+          <div class="cover-text">
 
-</div>
+              <form id="text-submit" class="text-area">
+                  <input id="input" class="input" type="text" placeholder="Type text here...">          
+                  <button class="btn-lg scrollToBottom button" id="icon">Push</button>
+              </form>
+          </div>
+
+      </div>
 
 `
 
